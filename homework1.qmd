@@ -158,14 +158,15 @@ In practice, we want to calculate a similar value for the whole model. This invo
 
 ```{r}
 #| echo: fenced
-#| eval: false
+#| eval: true  # Changed from false to true
 
 # Calc. the total sum of squared diffs
-tss <- sum((df1$yvals-mean(df1$yvals))^2)
+tss <- sum((df1$yvals - mean(df1$yvals))^2)
 
 # Calc. the regression sum of squared diffs
-rss <- sum((model1$fitted.values-mean(df1$yvals))^2)
+rss <- sum((model1$fitted.values - mean(df1$yvals))^2)
 
 # R-squared calculated from sum of squares method
-rss/tss
+rss / tss
+
 ```

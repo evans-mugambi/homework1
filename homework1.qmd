@@ -123,9 +123,11 @@ Use what we learned about slicing different types of objects to pull the regress
 ```{r}
 #| echo: true
 
-# Your code for getting coefficient estimates from model1 goes below
+# Extract regression coefficients from model1
+coef(model1)
 
-# Your code for getting coefficient estimates from model1_summary goes below
+# Extract regression coefficients from model1_summary
+model1_summary$coefficients
 ```
 
 ::: callout-tip

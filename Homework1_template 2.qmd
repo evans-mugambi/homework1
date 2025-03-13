@@ -1,0 +1,172 @@
+---
+title: "Homework 1"
+author: "Test Student"
+format:
+  pdf:
+    code-line-numbers: true
+code-block-border-left: false
+editor: visual
+---
+
+## Basic Instructions - Quarto First Time
+
+Congratulations! You're about to make your first Quarto document. As discussed in class, Quarto enables you to integrate your coding and analysis directly into the final document(s) you will use to communicate your results and interpretations.
+
+This homework will be a mix of coding and short answers.
+
+### Coding
+
+Coding is done in executable blocks called "chunks". Each chunk has various options regarding how the execution done. These options are placed on lines that start with `#|`. For now, I will set option values unless otherwise stated. Also, note that code in a previous chunk may impact code in a later chunk. For example:
+
+```{r}
+#| echo: fenced
+#| label: example-chunk1
+
+# Create and print an object called A with the value 4
+(A <- 2+2)
+```
+
+```{r}
+#| echo: fenced
+#| label: example-chunk2
+
+# Then remove the object A from the environment
+rm(A)
+```
+
+Now, we execute another block trying to print the object `A` that we both created and removed above, with the following result
+
+```{r}
+#| echo: fenced
+#| error: true
+#| label: example-chunk3
+
+# Normally, if code in a chunk causes and error, then the document will not
+# to render. Here I've allowed it because I know and expect it to fail. This
+# might be a helpful thing to remember in future assignments.
+A
+```
+
+The error happened because the object `A` no longer existed in the coding environment of the document by the time it was called on in `example-chunk3`. A similar error could happen if you don't read in a data set.
+
+One other thing I want to point out about coded portions of the assignment has to do with multiline comments. It may be the case that I want you to do some initial operation on the data before it feeds into code that does something we haven't covered --- like visualization at this point in the class. In order to keep the code chunks from throwing errors, I might give you a template where part of a code chunk is commented out. For example:
+
+```{r}
+#| echo: true
+
+# Your code goes here. Create an object called 'df'
+
+
+# The code below visualizes it.
+# df |>                                 # begin uncomment         
+#   ggplot() +
+#   geom_line(
+#     aes(
+#       x = time,
+#       y = population)) +
+#   scale_x_continuous(
+#     limits = c(2000,2020),
+#     expand = expansion(mult = 0),
+#     breaks = seq(2000,2020,5)) +
+#   theme_minimal()                     # end uncomment
+```
+
+The code in lines 5 through 15 above would generate an error if the object `df` doesn't exist or is created in a way that the variables `time` and `population` don't exist to be plotted for the years 2000 to 2020. To quickly comment/uncomment multiple lines of code you can use the keyboard shortcut `Ctrl+Shift+C` or follow the menu path `Code > Comment/Uncomment Lines`.
+
+These insights should be sufficient to help you complete the coding portions of your homework. I will provide additional insights as necessary to complete future homeworks. Also, I will always include a setup code chunk that loads the necessary packages .
+
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(lubridate)
+```
+
+### Short Answers
+
+The short answer portions of the homework are areas where I may ask you to interpret the analysis your performing. That might mean conceptually describing what the code is doing. Or, as we work with more data, how to interpret the output of our analyses. Areas where you should put these answers will have "\[ANSWER HERE\]" in them, which you should delete and replace with your actual answer.
+
+As long as you use the "Visual" mode of the Quarto document editor, it should be fairly similar to the short answer boxes you've seen before on Canvas. The main difference is the coding, citation, and math typesetting options in the `Insert` dropdown menu.
+
+This should be sufficient information for you to work with on the short answer portions of this homework.
+
+## Exercise 1 - Slicing Data Objects
+
+The following code creates simulated data that is then analyzed within a regression model using the `lm` function from base R `stats` package.[^1] The objects `model1` and `model1_summary` store the regression coefficient estimates (the values in the "Estimate" column of the table below slightly differently.
+
+[^1]: Don't worry, we are *not* directly interpretting the results in this homework/class. You can take ECON335 or AREC335 if you're interested in doing that.
+
+```{r}
+#| echo: true
+
+# This sets the seed for the PRNG, so it's the same each time
+set.seed(2025)
+
+# This creates simulated data
+df1 <- tibble(
+  noise = rnorm(n=100, mean=0, sd=150),
+  xvals = runif(n=100, min=200, max=500),
+  yvals = 2.5*xvals+noise)
+
+# This creates the model objects, which include our coefficient estimates
+model1 <- df1 |> lm(data = _,formula = yvals~xvals)
+(model1_summary <- model1 |> summary())
+```
+
+Use what we learned about slicing different types of objects to pull the regression coefficient estimates from the objects in the following code chunk. We just want the code that shows the number(s), do *not* assign your code to an object name with the `<-` operator.
+
+```{r}
+#| echo: true
+
+# Your code for getting coefficient estimates from model1 goes below
+
+# Your code for getting coefficient estimates from model1_summary goes below
+```
+
+::: callout-tip
+## Tip: Play Before You Commit
+
+One way you can think of Quarto documents is as very fancy comments around code in an R script file. So, just like in class, you can use the console in RStudio to play around with the data before committing it to code chunks.
+:::
+
+## Exercise 2 - Assessing Model Fit
+
+When using a model to predict outcomes, we want to evaluate how well it fits. In the code chunk below, you'll do that for the ***first*** observation in the data and model. We need a baseline to compare against, and the simplest guess for the expected value of `yvals`, which is what our model is trying to predict, is just it's mean. Next, we compare the mean of `yvals` to the first predicted value of `yvals` which is in the `fitted.values` of the `model1` object. Lastly, we need the actual first value of `yvals`. The difference between the mean of `yvals` and the actual first observation `yvals` tells us how well/poorly the mean predicts that observation. The difference between the first observation of `fitted.values` and the mean of `yvals` tells how much the model adjusts our expectations based on the first observation `xvals`. By taking the ratio of these differences, we learn how much of the previously *unexplained* variation from the mean is *explained* by the model.
+
+```{r}
+#| echo: true
+
+# Calculate the mean of yvals using the mean function, call it 'yvm'
+
+# Calculate the difference b/t the first obs. of yvals and yvm,
+# call it 'ymd'
+
+# Calculate the difference b/t the first obs. of fitted.values
+# and yvm, call it 'yfd'
+
+# Divide yfd by ymd. This is the % of the variation between yvm and
+# the first obs. of yvals that is explained by model1. Don't use the
+# assignment operator in this one.
+
+```
+
+In practice, we want to calculate a similar value for the whole model. This involves summing up the differences we talked about above. However, before adding the differences together, we square them so that observations with similar differences but opposite signs (think 3 and -3) don't cancel each other out. The ratio for the whole model is $R^2$ and in this model, with this data, is `r round(x=model1_summary$r.squared,digit=3)`. Change the `eval` option of the code chunk below to `true` to show how this is calculated.
+
+```{r}
+#| echo: fenced
+#| eval: false
+
+# Calc. the total sum of squared diffs
+tss <- sum((df1$yvals-mean(df1$yvals))^2)
+
+# Calc. the regression sum of squared diffs
+rss <- sum((model1$fitted.values-mean(df1$yvals))^2)
+
+# R-squared calculated from sum of squares method
+rss/tss
+```

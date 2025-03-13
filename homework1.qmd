@@ -143,18 +143,15 @@ When using a model to predict outcomes, we want to evaluate how well it fits. In
 ```{r}
 #| echo: true
 
-# Calculate the mean of yvals using the mean function, call it 'yvm'
+# Calculate the mean of yvals
+yvm <- mean(df1$yvals)
+# Difference between the first observation of yvals and yvm
+ ymd <- df1$yvals[1] - yvm
 
-# Calculate the difference b/t the first obs. of yvals and yvm,
-# call it 'ymd'
-
-# Calculate the difference b/t the first obs. of fitted.values
-# and yvm, call it 'yfd'
-
-# Divide yfd by ymd. This is the % of the variation between yvm and
-# the first obs. of yvals that is explained by model1. Don't use the
-# assignment operator in this one.
-
+# Difference between the first observation of fitted.values and yvm
+ yfd <- model1$fitted.values[1] - yvm
+# Compute the percentage of explained variation
+yfd / ymd
 ```
 
 In practice, we want to calculate a similar value for the whole model. This involves summing up the differences we talked about above. However, before adding the differences together, we square them so that observations with similar differences but opposite signs (think 3 and -3) don't cancel each other out. The ratio for the whole model is $R^2$ and in this model, with this data, is `r round(x=model1_summary$r.squared,digit=3)`. Change the `eval` option of the code chunk below to `true` to show how this is calculated.
